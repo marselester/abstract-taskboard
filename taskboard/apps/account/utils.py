@@ -6,4 +6,5 @@ from django.conf import settings
 
 
 def commission(amount):
-    return amount * settings.ORDER_COMMISSION_RATE / Decimal('100')
+    result = amount * Decimal(settings.ORDER_COMMISSION_RATE) / Decimal('100')
+    return result.quantize(Decimal('0.01'))
