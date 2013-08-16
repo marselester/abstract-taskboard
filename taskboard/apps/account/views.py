@@ -1,9 +1,20 @@
 # coding: utf-8
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import ListView, CreateView
 
+from taskboard.apps.order.models import Order
 from .decorators import ValidUserMixin
 from .forms import OrderCreateForm
+
+
+class OrderList(ValidUserMixin, ListView):
+
+    template_name = 'account/order_list.html'
+    context_object_name = 'orders'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Order.objects.filter(is_completed=False)
 
 
 class OrderCreate(ValidUserMixin, CreateView):

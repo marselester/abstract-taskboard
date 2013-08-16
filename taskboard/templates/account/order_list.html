@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+What do you like to do?
+<a href="{% url 'order_add' %}">Create an order</a>
+or do some:
+
+{% for order in orders %}
+<ul>
+    <li>
+        <form action="" method="post">
+            {% csrf_token %}
+            ${{ order.cost }}
+            <input type="submit" value="Do">
+        </form>
+    </li>
+</ul>
+{% endfor %}
+
+{% if is_paginated %}
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+{% endif %}
+{% endblock %}
+
