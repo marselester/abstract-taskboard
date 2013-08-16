@@ -66,6 +66,7 @@ INSTALLED_APPS = (
 
     'taskboard.apps.account',
     'taskboard.apps.order',
+    'taskboard.apps.billing',
 )
 
 LOGGING = {
