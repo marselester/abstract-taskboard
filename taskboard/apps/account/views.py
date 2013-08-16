@@ -1,10 +1,14 @@
 # coding: utf-8
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, View
+from django.shortcuts import get_object_or_404, redirect
+from django.db import transaction
 
 from taskboard.apps.order.models import Order
+from taskboard.apps.billing.models import MoneyTransfer
 from .decorators import ValidUserMixin
 from .forms import OrderCreateForm
+from .utils import commision
 
 
 class OrderList(ValidUserMixin, ListView):
@@ -27,3 +31,26 @@ class OrderCreate(ValidUserMixin, CreateView):
         order = form.save(False)
         order.customer = self.request.user.as_customer
         return super(OrderCreate, self).form_valid(form)
+
+
+class AcceptOrder(ValidUserMixin, View):
+
+    @transaction.commit_on_success
+    def post(self, request, *args, **kwargs):
+        user = request.user
+
+        order_id = request.POST.get('order_id')
+        order = get_object_or_404(Order, pk=order_id, is_completed=False)
+
+        order.is_completed = True
+        order.save()
+
+        amount = order.cost - commision(order.cost)
+
+        MoneyTransfer.objects.create(
+            user=user,
+            amount=amount,
+            transfer_type=MoneyTransfer.CUSTOMER_REFILL
+        )
+
+        return redirect('order_list')

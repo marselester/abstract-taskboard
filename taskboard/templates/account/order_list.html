@@ -8,9 +8,10 @@ or do some:
 {% for order in orders %}
 <ul>
     <li>
-        <form action="" method="post">
+        <form action="{% url 'order_accept' %}" method="post">
             {% csrf_token %}
             ${{ order.cost }}
+            <input type="hidden" name="order_id" value="{{ order.pk }}"/>
             <input type="submit" value="Do">
         </form>
     </li>
