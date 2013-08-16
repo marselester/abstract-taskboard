@@ -9,7 +9,7 @@ or do some:
 <ul>
     <li>
         <b>${{ order.cost }}</b>
-        {% if user == order.customer %}
+        {% if user.pk != order.customer.user_id %}
         <form action="{% url 'order_accept' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="order_id" value="{{ order.pk }}"/>

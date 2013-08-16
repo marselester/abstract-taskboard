@@ -43,7 +43,7 @@ class AcceptOrder(ValidUserMixin, View):
 
         order_id = request.POST.get('order_id')
         try:
-            order = Order.objects.exclude(customer=user) \
+            order = Order.objects.exclude(customer__user=user.pk) \
                                  .get(pk=order_id, is_completed=False)
         except Order.DoesNotExist:
             raise Http404
