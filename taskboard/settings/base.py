@@ -62,6 +62,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+
+    'taskboard.apps.account',
+    'taskboard.apps.order',
 )
 
 LOGGING = {
