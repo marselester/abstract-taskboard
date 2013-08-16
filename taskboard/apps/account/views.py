@@ -9,7 +9,7 @@ from taskboard.apps.order.models import Order
 from taskboard.apps.billing.models import MoneyTransfer
 from .decorators import ValidUserMixin
 from .forms import OrderCreateForm
-from .utils import commision
+from .utils import commission
 
 
 class OrderList(ValidUserMixin, ListView):
@@ -51,7 +51,7 @@ class AcceptOrder(ValidUserMixin, View):
         order.is_completed = True
         order.save()
 
-        amount = order.cost - commision(order.cost)
+        amount = order.cost - commission(order.cost)
 
         MoneyTransfer.objects.create(
             user=user,
