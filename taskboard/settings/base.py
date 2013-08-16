@@ -1,6 +1,7 @@
 # coding: utf-8
 """Settings that are the same for both development and production."""
 import os
+from decimal import Decimal
 
 
 PROJECT_PATH = os.path.dirname(os.path.dirname(__file__))
@@ -92,3 +93,5 @@ LOGGING = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+
+MIN_ORDER_COST_RUB = Decimal('100')
