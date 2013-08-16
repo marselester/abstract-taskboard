@@ -8,12 +8,16 @@ or do some:
 {% for order in orders %}
 <ul>
     <li>
+        <b>${{ order.cost }}</b>
+        {% if user == order.customer %}
         <form action="{% url 'order_accept' %}" method="post">
             {% csrf_token %}
-            ${{ order.cost }}
             <input type="hidden" name="order_id" value="{{ order.pk }}"/>
             <input type="submit" value="Do">
         </form>
+        {% else %}
+        yours
+        {% endif %}
     </li>
 </ul>
 {% endfor %}

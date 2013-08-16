@@ -1,8 +1,9 @@
 # coding: utf-8
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, CreateView, View
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.db import transaction
+from django.http import Http404
 
 from taskboard.apps.order.models import Order
 from taskboard.apps.billing.models import MoneyTransfer
@@ -18,7 +19,8 @@ class OrderList(ValidUserMixin, ListView):
     paginate_by = 5
 
     def get_queryset(self):
-        return Order.objects.filter(is_completed=False)
+        return Order.objects.filter(is_completed=False) \
+                            .select_related('customer')
 
 
 class OrderCreate(ValidUserMixin, CreateView):
@@ -40,7 +42,11 @@ class AcceptOrder(ValidUserMixin, View):
         user = request.user
 
         order_id = request.POST.get('order_id')
-        order = get_object_or_404(Order, pk=order_id, is_completed=False)
+        try:
+            order = Order.objects.exclude(customer=user) \
+                                 .get(pk=order_id, is_completed=False)
+        except Order.DoesNotExist:
+            raise Http404
 
         order.is_completed = True
         order.save()
